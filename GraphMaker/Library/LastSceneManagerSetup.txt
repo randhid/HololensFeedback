@@ -1,0 +1,4 @@
+sceneSetups:
+- path: Assets/Graph_Maker/Scenes/Ring_Test.unity
+  isLoaded: 1
+  isActive: 1

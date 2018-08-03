@@ -1,0 +1,4 @@
+sceneSetups:
+- path: Assets/Graph_Maker/Examples/X_Dynamic/X_Dynamic.unity
+  isLoaded: 1
+  isActive: 1
