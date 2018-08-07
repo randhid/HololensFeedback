@@ -1,23 +1,27 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System;
 using System.Threading;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
+using System.Collections.Generic;
 
 
 public class WMG_X_Tutorial_1 : MonoBehaviour 
     {
+
+  //  JavaScriptSerializer serializer;
     public GameObject emptyGraphPrefab;
 
     public WMG_Axis_Graph graph;
 
     public WMG_Series series1;
 
-    
+    public float shanklength;
+    public float thighlength;
 
-    public bool use8;
+    public float origin_x;
+    public float origin_y;
+
     // read Thread
     Thread readThread;
 
@@ -30,8 +34,6 @@ public class WMG_X_Tutorial_1 : MonoBehaviour
 
     // UDP packet store
     public string lastReceivedPacket = "";
-    public string AllReceivedText;
-
 
     public bool startReceving = false;
 
@@ -83,11 +85,10 @@ public class WMG_X_Tutorial_1 : MonoBehaviour
         lastReceivedPacket = "";
     }
 
-    // receive thread function
+        // receive thread function
     private void ReceiveData()
     {
         client = new UdpClient(port);
-        //client.Client.Blocking = false;
         while (true)
         {
             if (!startReceving)
@@ -96,26 +97,47 @@ public class WMG_X_Tutorial_1 : MonoBehaviour
             {
                 // receive bytes
                 IPEndPoint anyIP = new IPEndPoint(IPAddress.Parse(IPaddressConnect), port);
-                //IPEndPoint anyIP = new IPEndPoint(IPAddress.Any, port);
+                byte[] data = client.Receive(ref anyIP);
 
-                byte[] data = new byte[1024];
-                data = client.Receive(ref anyIP);
+                double hipflexion_r = BitConverter.ToDouble(data, 0);
+                double hipabduction_r = BitConverter.ToDouble(data, 8);
+                double hiprotation_r = BitConverter.ToDouble(data, 16);
+                double kneeflexion_r = BitConverter.ToDouble(data, 24);
 
-                string text;
-                text = Encoding.UTF8.GetString(data);
+                double hipflexion_d = hipflexion_r * (180 / Math.PI);
+                double hipabduction_d = hipabduction_r * (180 / Math.PI);
+                double hiprotation_d = hiprotation_r * (180 / Math.PI);
+                double kneeflexion_d = kneeflexion_r * (180 / Math.PI);
 
+                double theta = 180 - hipflexion_d;
+                double alpha = kneeflexion_d - theta;
 
-                // show received message
-                print(">>" + text);
-                // store new massage as latest message
-                lastReceivedPacket = text;
+                float xcoord_1 = origin_x + (thighlength * (float)Math.Cos(theta));
+                float ycoord_1 = origin_y - (thighlength * (float)Math.Sin(theta));
+                float xcoord_2 = xcoord_1 - (shanklength * (float)Math.Cos(alpha));
+                float ycoord_2 = ycoord_1 - (shanklength * (float)Math.Sin(alpha));
+
+                Vector2 A = new Vector2(origin_x, origin_y);
+                Vector2 B = new Vector2(xcoord_1, ycoord_1);
+                Vector2 C = new Vector2(xcoord_2, ycoord_2);
+
+                List<Vector2> Jdata = new List<Vector2>();
+
+                print(hipflexion_d);
+                print(hipabduction_d);
+                print(kneeflexion_d);
+
+                //Jdata.Add(A);
+                //Jdata.Add(B);
+                //Jdata.Add(C);
+                //series1.pointValues.SetList(Jdata);
 
 
 
             }
             catch (Exception err)
             {
-                print(err.ToString());
+                //print(err.ToString());
             }
         }
     }
@@ -131,9 +153,8 @@ public class WMG_X_Tutorial_1 : MonoBehaviour
         GameObject graphGO = GameObject.Instantiate(emptyGraphPrefab);
 	    graphGO.transform.SetParent(this.transform, false);
 	    graph = graphGO.GetComponent<WMG_Axis_Graph>();
-
-		series1 = graph.addSeries();
-		graph.xAxis.AxisMaxValue = 20;
+        series1 = graph.addSeries();
+        graph.xAxis.AxisMaxValue = 20;
 
 	   	}
 

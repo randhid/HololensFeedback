@@ -363,9 +363,11 @@ MonoBehaviour:
   emptyGraphPrefab: {fileID: 125792, guid: f97becae024eea343a46b501a1d5d7fb, type: 2}
   graph: {fileID: 0}
   series1: {fileID: 0}
-  use8: 0
+  shanklength: 10
+  thighlength: 10
+  origin_x: 20
+  origin_y: 20
   port: 61557
   IPaddressConnect: 192.168.1.130
   lastReceivedPacket: 
-  AllReceivedText: 
   startReceving: 1
