@@ -361,15 +361,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   emptyGraphPrefab: {fileID: 125792, guid: f97becae024eea343a46b501a1d5d7fb, type: 2}
-  graph: {fileID: 0}
+  graph1: {fileID: 11450752, guid: f97becae024eea343a46b501a1d5d7fb, type: 2}
   series1: {fileID: 0}
-  series1Data:
-  - {x: 1, y: 3}
-  - {x: 2, y: 5}
-  - {x: 3, y: 6}
-  useData2: 1
-  series1Data2:
-  - Apples,2
-  - Oranges,5
-  - Grapes,
-  - Plums,6
+  shanklength: 10
+  thighlength: 10
+  origin_x: 20
+  origin_y: 20
+  port: 61557
+  IPaddressConnect: 192.168.1.130
+  lastReceivedPacket: 
+  startReceving: 0

@@ -72,11 +72,11 @@
     <Compile Include="Assets\Graph_Maker\Scripts\Editor\WMG_Radar_Graph_E.cs" />
     <Compile Include="Assets\Graph_Maker\Scripts\Editor\WMG_Ring_Graph_E.cs" />
     <Compile Include="Assets\Graph_Maker\Scripts\Editor\WMG_Series_E.cs" />
-    <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>C:/Users/SiddharthChamarthy/Documents/GitHub/HololensFeedback/FeedbackTrial5/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>C:/Users/SiddharthChamarthy/Documents/GitHub/HololensFeedback/FeedbackTrial5/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.PackageManagerUI.Editor">
+      <HintPath>C:/Users/SiddharthChamarthy/Documents/GitHub/HololensFeedback/FeedbackTrial5/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -324,6 +324,21 @@
     <Reference Include="UnityEditor.WindowsStandalone.Extensions">
       <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/windowsstandalonesupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="DOTween">
+      <HintPath>C:/Users/SiddharthChamarthy/Documents/GitHub/HololensFeedback/FeedbackTrial5/Assets/Graph_Maker/DOTween/DOTween.dll</HintPath>
+    </Reference>
+    <Reference Include="DOTween43">
+      <HintPath>C:/Users/SiddharthChamarthy/Documents/GitHub/HololensFeedback/FeedbackTrial5/Assets/Graph_Maker/DOTween/DOTween43.dll</HintPath>
+    </Reference>
+    <Reference Include="DOTween46">
+      <HintPath>C:/Users/SiddharthChamarthy/Documents/GitHub/HololensFeedback/FeedbackTrial5/Assets/Graph_Maker/DOTween/DOTween46.dll</HintPath>
+    </Reference>
+    <Reference Include="DOTween50">
+      <HintPath>C:/Users/SiddharthChamarthy/Documents/GitHub/HololensFeedback/FeedbackTrial5/Assets/Graph_Maker/DOTween/DOTween50.dll</HintPath>
+    </Reference>
+    <Reference Include="DOTweenEditor">
+      <HintPath>C:/Users/SiddharthChamarthy/Documents/GitHub/HololensFeedback/FeedbackTrial5/Assets/Graph_Maker/DOTween/Editor/DOTweenEditor.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor.Advertisements">
       <HintPath>C:/Users/SiddharthChamarthy/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.ads@2.0.7/Editor/UnityEditor.Advertisements.dll</HintPath>
     </Reference>
@@ -344,21 +359,6 @@
     </Reference>
     <Reference Include="SyntaxTree.VisualStudio.Unity.Bridge">
       <HintPath>C:/Program Files (x86)/Microsoft Visual Studio Tools for Unity/15.0/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
-    </Reference>
-    <Reference Include="DOTweenEditor">
-      <HintPath>C:/Users/SiddharthChamarthy/Documents/GitHub/HololensFeedback/FeedbackTrial5/Assets/Graph_Maker/DOTween/Editor/DOTweenEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="DOTween">
-      <HintPath>C:/Users/SiddharthChamarthy/Documents/GitHub/HololensFeedback/FeedbackTrial5/Assets/Graph_Maker/DOTween/DOTween.dll</HintPath>
-    </Reference>
-    <Reference Include="DOTween46">
-      <HintPath>C:/Users/SiddharthChamarthy/Documents/GitHub/HololensFeedback/FeedbackTrial5/Assets/Graph_Maker/DOTween/DOTween46.dll</HintPath>
-    </Reference>
-    <Reference Include="DOTween43">
-      <HintPath>C:/Users/SiddharthChamarthy/Documents/GitHub/HololensFeedback/FeedbackTrial5/Assets/Graph_Maker/DOTween/DOTween43.dll</HintPath>
-    </Reference>
-    <Reference Include="DOTween50">
-      <HintPath>C:/Users/SiddharthChamarthy/Documents/GitHub/HololensFeedback/FeedbackTrial5/Assets/Graph_Maker/DOTween/DOTween50.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/2.0-api/mscorlib.dll</HintPath>

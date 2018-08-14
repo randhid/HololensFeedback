@@ -6,13 +6,16 @@ using System.Net.Sockets;
 using System.Collections.Generic;
 
 
-public class WMG_X_Tutorial_1 : MonoBehaviour 
-    {
+public class WMG_X_Tutorial_1 : MonoBehaviour
+{
 
-  //  JavaScriptSerializer serializer;
     public GameObject emptyGraphPrefab;
 
-    public WMG_Axis_Graph graph;
+    private Vector2 A = new Vector2();
+    private Vector2 B = new Vector2();
+    private Vector2 C = new Vector2();
+
+    public WMG_Axis_Graph graph1;
 
     public WMG_Series series1;
 
@@ -26,7 +29,7 @@ public class WMG_X_Tutorial_1 : MonoBehaviour
     Thread readThread;
 
     // udpclient object
-    UdpClient client;
+    UdpClient client = new UdpClient();
 
     // port number
     public int port = -1;
@@ -37,9 +40,11 @@ public class WMG_X_Tutorial_1 : MonoBehaviour
 
     public bool startReceving = false;
 
+
     // not start from unity3d
     public void StartReceive()
     {
+
         if (port == -1 || IPaddressConnect == "")
         {
             Debug.Log("Connection port or IP address not configured");
@@ -54,6 +59,9 @@ public class WMG_X_Tutorial_1 : MonoBehaviour
     // Unity Update Function
     void Update()
     {
+        // print(A);
+
+        series1.pointValues.SetList(new List<Vector2>() { A, B, C });
         // check button "s" to abort the read-thread
         if (Input.GetKeyDown("q") && startReceving)
             stopThread();
@@ -85,8 +93,8 @@ public class WMG_X_Tutorial_1 : MonoBehaviour
         lastReceivedPacket = "";
     }
 
-        // receive thread function
-    private void ReceiveData()
+    // receive thread function
+    public void ReceiveData()
     {
         client = new UdpClient(port);
         while (true)
@@ -117,27 +125,19 @@ public class WMG_X_Tutorial_1 : MonoBehaviour
                 float xcoord_2 = xcoord_1 - (shanklength * (float)Math.Cos(alpha));
                 float ycoord_2 = ycoord_1 - (shanklength * (float)Math.Sin(alpha));
 
-                Vector2 A = new Vector2(origin_x, origin_y);
-                Vector2 B = new Vector2(xcoord_1, ycoord_1);
-                Vector2 C = new Vector2(xcoord_2, ycoord_2);
+                A.Set(origin_x, origin_y);
+                B.Set(xcoord_1, ycoord_1);
+                C.Set(xcoord_2, ycoord_2);
 
-                List<Vector2> Jdata = new List<Vector2>();
 
-                print(hipflexion_d);
-                print(hipabduction_d);
-                print(kneeflexion_d);
 
-                //Jdata.Add(A);
-                //Jdata.Add(B);
-                //Jdata.Add(C);
-                //series1.pointValues.SetList(Jdata);
-
+                //series1.pointValues.SetList(new List<Vector2>() { A, B, C });
 
 
             }
             catch (Exception err)
             {
-                //print(err.ToString());
+                print(err.ToString());
             }
         }
     }
@@ -148,16 +148,25 @@ public class WMG_X_Tutorial_1 : MonoBehaviour
         return lastReceivedPacket;
     }
 
-      void Start () {
-        StartReceive();
-        GameObject graphGO = GameObject.Instantiate(emptyGraphPrefab);
-	    graphGO.transform.SetParent(this.transform, false);
-	    graph = graphGO.GetComponent<WMG_Axis_Graph>();
-        series1 = graph.addSeries();
-        graph.xAxis.AxisMaxValue = 20;
+    void Start()
+    {   
+        GameObject graph12 = GameObject.Instantiate(emptyGraphPrefab);
+        graph12.transform.SetParent(this.transform, false);
+        graph1 = graph12.GetComponent<WMG_Axis_Graph>();
+        graph1.xAxis.AxisMaxValue = 20;
+        series1 = graph1.addSeries();
 
-	   	}
+        if (port == -1 || IPaddressConnect == "")
+        {
+            Debug.Log("Connection port or IP address not configured");
+        }
+        startReceving = true;
+        print("A");
+        // create thread for reading UDP messages
+        readThread = new Thread(new ThreadStart(ReceiveData));
+        readThread.IsBackground = true;
+        readThread.Start();
 
-
+    }
 
 }
