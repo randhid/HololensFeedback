@@ -288,6 +288,7 @@ GameObject:
   - component: {fileID: 2080610402}
   - component: {fileID: 2080610401}
   - component: {fileID: 2080610403}
+  - component: {fileID: 2080610404}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -360,14 +361,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bc52176b0a853a4e99f20c6488b2ac3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  emptyGraphPrefab: {fileID: 125792, guid: f97becae024eea343a46b501a1d5d7fb, type: 2}
-  graph1: {fileID: 0}
-  series1: {fileID: 0}
-  shanklength: 10
-  thighlength: 10
-  origin_x: 10
-  origin_y: 10
-  port: 61557
-  IPaddressConnect: 192.168.1.130
-  lastReceivedPacket: 
-  startReceving: 0
+--- !u!114 &2080610404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2080610399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b98a0505ddd98494fa57f9610a089c6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

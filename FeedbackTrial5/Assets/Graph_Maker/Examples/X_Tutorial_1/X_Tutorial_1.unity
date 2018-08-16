@@ -288,6 +288,7 @@ GameObject:
   - component: {fileID: 2080610402}
   - component: {fileID: 2080610401}
   - component: {fileID: 2080610403}
+  - component: {fileID: 2080610404}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -360,14 +361,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bc52176b0a853a4e99f20c6488b2ac3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2080610404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2080610399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8f98a3eb690e2f42b001a7b6fcd4586, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   emptyGraphPrefab: {fileID: 125792, guid: f97becae024eea343a46b501a1d5d7fb, type: 2}
-  graph1: {fileID: 11450752, guid: f97becae024eea343a46b501a1d5d7fb, type: 2}
+  graph1: {fileID: 0}
   series1: {fileID: 0}
-  shanklength: 10
-  thighlength: 10
+  shanklength: 20
+  thighlength: 20
   origin_x: 20
   origin_y: 20
-  port: 61557
-  IPaddressConnect: 192.168.1.130
-  lastReceivedPacket: 
-  startReceving: 0

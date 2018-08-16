@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Linq;
-using HoloToolkit.Unity;
+//using HoloToolkit.Unity;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
@@ -19,13 +19,13 @@ public class UDPMessageEvent : UnityEvent<string, string, byte[]>
 
 }
 
-public class UDPCommunication : Singleton<UDPCommunication>
+public class UDPCommunication : MonoBehaviour
 {
-    [Tooltip("port to listen for incoming data")]
-    public string internalPort = "12345";
+    [Tooltip ("port to listen for incoming data")]
+    public string internalPort = "61557";
 
     [Tooltip("IP-Address for sending")]
-    public string externalIP = "192.168.17.110";
+    public string externalIP = "192.168.1.130";
 
     [Tooltip("Port for sending")]
     public string externalPort = "12346";
@@ -33,13 +33,13 @@ public class UDPCommunication : Singleton<UDPCommunication>
     [Tooltip("Send a message at Startup")]
     public bool sendPingAtStart = true;
 
-    [Tooltip("Conten of Ping")]
+    [Tooltip("Content of Ping")]
     public string PingMessage = "hello";
 
     [Tooltip("Function to invoke at incoming packet")]
     public UDPMessageEvent udpEvent = null;
 
-    private readonly Queue<Action> ExecuteOnMainThread = new Queue<Action>();
+    private readonly  Queue<Action> ExecuteOnMainThread = new Queue<Action>();
 
 
 #if !UNITY_EDITOR

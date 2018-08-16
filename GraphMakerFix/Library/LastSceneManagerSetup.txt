@@ -1,0 +1,4 @@
+sceneSetups:
+- path: Assets/Graph_Maker/Examples/X_Ring_Graph/X_Ring_Graph.unity
+  isLoaded: 1
+  isActive: 1

@@ -1,172 +1,157 @@
 ﻿using UnityEngine;
 using System;
-using System.Threading;
-using System.Net;
-using System.Net.Sockets;
+using System.IO;
+using System.Text;
+using System.Linq;
+using HoloToolkit.Unity;
 using System.Collections.Generic;
+using UnityEngine.Events;
 
+#if !UNITY_EDITOR
+using Windows.Networking.Sockets;
+using Windows.Networking.Connectivity;
+using Windows.Networking;
+#endif
 
-public class WMG_X_Tutorial_1 : MonoBehaviour
+[System.Serializable]
+public class UDPMessageEvent : UnityEvent<string, string, byte[]>
 {
 
-    //  JavaScriptSerializer serializer;
-    public GameObject emptyGraphPrefab;
+}
 
-    private Vector2 A = new Vector2();
-    private Vector2 B = new Vector2();
-    private Vector2 C = new Vector2();
+public class UDPCommunication : Singleton<UDPCommunication>
+{
+    [Tooltip("port to listen for incoming data")]
+    public string internalPort = "61557";
 
-    public WMG_Axis_Graph graph1;
+    [Tooltip("IP-Address for sending")]
+    public string externalIP = "192.168.1.192";
 
-    public WMG_Series series1;
+    [Tooltip("Port for sending")]
+    public string externalPort = "61557";
 
-    public float shanklength;
-    public float thighlength;
+    [Tooltip("Send a message at Startup")]
+    public bool sendPingAtStart = true;
 
-    public float origin_x;
-    public float origin_y;
+    [Tooltip("Conten of Ping")]
+    public string PingMessage = "hello";
 
-    // read Thread
-    Thread readThread;
+    [Tooltip("Function to invoke at incoming packet")]
+    public UDPMessageEvent udpEvent = null;
 
-    // udpclient object
-    UdpClient client;
+    private readonly Queue<Action> ExecuteOnMainThread = new Queue<Action>();
 
-    // port number
-    public int port = -1;
-    public string IPaddressConnect = "";
 
-    // UDP packet store
-    public string lastReceivedPacket = "";
+#if !UNITY_EDITOR
 
-    public bool startReceving = false;
-
-    // not start from unity3d
-    public void StartReceive()
+    //we've got a message (data[]) from (host) in case of not assigned an event
+    void UDPMessageReceived(string host, string port, byte[] data)
     {
+        Debug.Log("GOT MESSAGE FROM: " + host + " on port " + port + " " + data.Length.ToString() + " bytes ");
 
-        if (port == -1 || IPaddressConnect == "")
+
+    }
+
+    DatagramSocket socket;
+
+    async void Start()
+    {
+        if (udpEvent == null)
         {
-            Debug.Log("Connection port or IP address not configured");
+            udpEvent = new UDPMessageEvent();
+            udpEvent.AddListener(UDPMessageReceived);
         }
-        startReceving = true;
-        // create thread for reading UDP messages
-        readThread = new Thread(new ThreadStart(ReceiveData));
-        readThread.IsBackground = true;
-        readThread.Start();
-    }
 
-    // Unity Update Function
-    void Update()
-    {
-        // print(A);
 
-        series1.pointValues.SetList(new List<Vector2>() { A, B, C });
-        // check button "s" to abort the read-thread
-        if (Input.GetKeyDown("q") && startReceving)
-            stopThread();
-    }
+        Debug.Log("Waiting for a connection...");
 
-    void OnDisable()
-    {
-        if (readThread != null)
-            readThread.Abort();
+        socket = new DatagramSocket();
+        socket.MessageReceived += Socket_MessageReceived;
 
-        client.Close();
-    }
-
-    // Unity Application Quit Function
-    void OnApplicationQuit()
-    {
-        stopThread();
-    }
-
-    // Stop reading UDP messages
-    public void stopThread()
-    {
-        if (readThread.IsAlive)
+        HostName IP = null;
+        try
         {
-            readThread.Abort();
-        }
-        client.Close();
-        startReceving = false;
-        lastReceivedPacket = "";
-    }
+            var icp = NetworkInformation.GetInternetConnectionProfile();
 
-    // receive thread function
-    public void ReceiveData()
-    {
-        client = new UdpClient(port);
-        while (true)
+            IP = Windows.Networking.Connectivity.NetworkInformation.GetHostNames()
+            .SingleOrDefault(
+                hn =>
+                    hn.IPInformation?.NetworkAdapter != null && hn.IPInformation.NetworkAdapter.NetworkAdapterId
+                    == icp.NetworkAdapter.NetworkAdapterId);
+
+            await socket.BindEndpointAsync(IP, internalPort);
+        }
+        catch (Exception e)
         {
-            if (!startReceving)
-                break;
-            try
-            {
-                // receive bytes
-                IPEndPoint anyIP = new IPEndPoint(IPAddress.Parse(IPaddressConnect), port);
-                byte[] data = client.Receive(ref anyIP);
-
-                double hipflexion_r = BitConverter.ToDouble(data, 0);
-                double hipabduction_r = BitConverter.ToDouble(data, 8);
-                double hiprotation_r = BitConverter.ToDouble(data, 16);
-                double kneeflexion_r = BitConverter.ToDouble(data, 24);
-
-                double hipflexion_d = hipflexion_r * (180 / Math.PI);
-                double hipabduction_d = hipabduction_r * (180 / Math.PI);
-                double hiprotation_d = hiprotation_r * (180 / Math.PI);
-                double kneeflexion_d = kneeflexion_r * (180 / Math.PI);
-
-                double theta = 180 - hipflexion_d;
-                double alpha = kneeflexion_d - theta;
-
-                float xcoord_1 = origin_x + (thighlength * (float)Math.Cos(theta));
-                float ycoord_1 = origin_y - (thighlength * (float)Math.Sin(theta));
-                float xcoord_2 = xcoord_1 - (shanklength * (float)Math.Cos(alpha));
-                float ycoord_2 = ycoord_1 - (shanklength * (float)Math.Sin(alpha));
-
-                A.Set(origin_x, origin_y);
-                B.Set(xcoord_1, ycoord_1);
-                C.Set(xcoord_2, ycoord_2);
-
-                print(A);
-
-
-                //series1.pointValues.SetList(new List<Vector2>() { A, B, C });
-
-
-            }
-            catch (Exception err)
-            {
-                print(err.ToString());
-            }
+            Debug.Log(e.ToString());
+            Debug.Log(SocketError.GetStatus(e.HResult).ToString());
+            return;
         }
+
+
+
     }
 
-    // return the latest message
-    public string getLatestPacket()
-    {
-        return lastReceivedPacket;
-    }
 
+#else
+    // to make Unity-Editor happy :-)
     void Start()
     {
-        GameObject graphGO = GameObject.Instantiate(emptyGraphPrefab);
-        graphGO.transform.SetParent(this.transform, false);
-        graph1 = graphGO.GetComponent<WMG_Axis_Graph>();
-        graph1.xAxis.AxisMaxValue = 20;
-        series1 = graph1.addSeries();
-
-        if (port == -1 || IPaddressConnect == "")
-        {
-            Debug.Log("Connection port or IP address not configured");
-        }
-        startReceving = true;
-        // create thread for reading UDP messages
-        readThread = new Thread(new ThreadStart(ReceiveData));
-        readThread.IsBackground = true;
-        readThread.Start();
 
     }
 
+
+#endif
+
+
+    static MemoryStream ToMemoryStream(Stream input)
+    {
+        try
+        {                                         // Read and write in
+            byte[] block = new byte[0x1000];       // blocks of 4K.
+            MemoryStream ms = new MemoryStream();
+            while (true)
+            {
+                int bytesRead = input.Read(block, 0, block.Length);
+                if (bytesRead == 0) return ms;
+                ms.Write(block, 0, bytesRead);
+            }
+        }
+        finally { }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        while (ExecuteOnMainThread.Count > 0)
+        {
+            ExecuteOnMainThread.Dequeue().Invoke();
+
+        }
+    }
+
+#if !UNITY_EDITOR
+    private void Socket_MessageReceived(Windows.Networking.Sockets.DatagramSocket sender,
+        Windows.Networking.Sockets.DatagramSocketMessageReceivedEventArgs args)
+    {
+        Debug.Log("GOT MESSAGE FROM: " + args.RemoteAddress.DisplayName);
+        //Read the message that was received from the UDP  client.
+        Stream streamIn = args.GetDataStream().AsStreamForRead();
+        MemoryStream ms = ToMemoryStream(streamIn);
+        byte[] msgData = ms.ToArray();
+
+
+        if (ExecuteOnMainThread.Count == 0)
+        {
+            ExecuteOnMainThread.Enqueue(() =>
+            {
+                Debug.Log("ENQEUED ");
+                if (udpEvent != null)
+                    udpEvent.Invoke(args.RemoteAddress.DisplayName, internalPort, msgData);
+            });
+        }
+    }
+
+
+#endif
 }

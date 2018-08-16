@@ -5,10 +5,14 @@ using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
 
+#if !UNITY_EDITOR
+using Windows.Networking.Sockets;
+using Windows.Networking.Connectivity;
+using Windows.Networking;
+#endif
 
 public class WMG_X_Tutorial_1 : MonoBehaviour
 {
-
     public GameObject emptyGraphPrefab;
 
     private Vector2 A = new Vector2();
@@ -27,8 +31,8 @@ public class WMG_X_Tutorial_1 : MonoBehaviour
 
     // read Thread
     Thread readThread;
-
-    // udpclient object
+ 
+   // udpclient object
     UdpClient client = new UdpClient();
 
     // port number
@@ -40,40 +44,14 @@ public class WMG_X_Tutorial_1 : MonoBehaviour
 
     public bool startReceving = false;
 
-
-    // not start from unity3d
-    public void StartReceive()
-    {
-
-        if (port == -1 || IPaddressConnect == "")
-        {
-            Debug.Log("Connection port or IP address not configured");
-        }
-        startReceving = true;
-        // create thread for reading UDP messages
-        readThread = new Thread(new ThreadStart(ReceiveData));
-        readThread.IsBackground = true;
-        readThread.Start();
-    }
-
     // Unity Update Function
     void Update()
     {
-        // print(A);
-
         series1.pointValues.SetList(new List<Vector2>() { A, B, C });
-        // check button "s" to abort the read-thread
-        if (Input.GetKeyDown("q") && startReceving)
-            stopThread();
+
     }
 
-    void OnDisable()
-    {
-        if (readThread != null)
-            readThread.Abort();
 
-        client.Close();
-    }
 
     // Unity Application Quit Function
     void OnApplicationQuit()
